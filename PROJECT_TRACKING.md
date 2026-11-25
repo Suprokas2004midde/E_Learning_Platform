@@ -6,11 +6,25 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 
 ## Progress Checklist
 
-- [x] **Step 1**: Root monorepo setup (`.gitignore`, `pnpm-workspace.yaml`, `package.json`, `turbo.json`, `AGENTS.md`, `README.md`)
+- [x] **Step 1**: Root monorepo setup (`.gitignore`, `.npmrc`, `pnpm-workspace.yaml`, `package.json`, `turbo.json`, `AGENTS.md`, `README.md`)
 - [x] **Step 2**: Shared types & Zod schemas (`packages/shared`)
-- [ ] **Step 3**: Public Mobile App (`frontend/mobile` — Expo + Expo Router + NativeWind)
+- [x] **Step 3**: Public Mobile App layout & modular components (`frontend/mobile` — Expo + Expo Router + NativeWind)
 - [ ] **Step 4**: Single Backend (`backend/` — Hono + MongoDB + Cloudinary + JWT)
 - [ ] **Step 5**: Admin Portal (`frontend/admin` — Next.js + Tailwind + Vercel)
+
+---
+
+## How Collaborators Can Run the Project
+
+1. **Install dependencies** (from the root `E_Learning_Platform/`):
+   ```bash
+   npx pnpm install
+   ```
+2. **Start the Mobile App** (from `frontend/mobile/`):
+   ```bash
+   npx expo start -c
+   ```
+   Scan the QR code with **Expo Go** on Android (or press `a` for Android emulator / `w` for web).
 
 ---
 
@@ -20,6 +34,7 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 | File | Purpose |
 | :--- | :--- |
 | `.gitignore` | Ignores `node_modules/`, build outputs (`.next/`, `.expo/`, `dist/`), and logs. **Intentionally keeps `.env` tracked** for team collaboration. |
+| `.npmrc` | Configures `node-linker=hoisted` so Expo Metro and NativeWind resolve all `pnpm` dependencies cleanly. |
 | `pnpm-workspace.yaml` | Defines the monorepo workspaces: `frontend/*`, `backend`, and `packages/*`. |
 | `package.json` | Root workspace scripts (`dev`, `build`, `lint`, `typecheck`) powered by Turborepo. |
 | `turbo.json` | Configures Turborepo task caching and execution order. |
@@ -35,9 +50,19 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 | `src/index.ts` | Exports shared Zod schemas & inferred TS types (`UserRole`, `RegisterInput`, `LoginInput`, `CourseInput`, `LessonInput`). |
 
 ### Public Mobile App (`frontend/mobile/`)
-- `app/` — Expo Router file-based screens (tabs, auth, course details, video player).
-- `components/` — Reusable NativeWind UI components.
-- `services/` — API client, React Query hooks, and `expo-secure-store` token helpers.
+| File / Folder | Purpose |
+| :--- | :--- |
+| `package.json`, `tsconfig.json`, `app.json` | Expo SDK 52+, Expo Router, NativeWind, TanStack Query, and Android package config. |
+| `tailwind.config.js`, `global.css`, `babel.config.js`, `metro.config.js` | NativeWind (Tailwind CSS for React Native) setup. |
+| `app/_layout.tsx` | Root layout with `SafeAreaProvider`, `QueryClientProvider`, and `Stack`. |
+| `app/(tabs)/_layout.tsx` | Bottom tab navigator (`Home`, `Courses`, `My Learning`, `Profile`). |
+| `app/(tabs)/index.tsx` | Home/Discover screen with category filter pills and featured courses. |
+| `app/(tabs)/courses.tsx`, `learning.tsx`, `profile.tsx` | Placeholder screens for Courses, My Learning, and Profile tabs. |
+| `components/Header/Header.tsx` | Reusable top header component (own folder). |
+| `components/CategoryPill/CategoryPill.tsx` | Reusable category filter pill component (own folder). |
+| `components/CourseCard/CourseCard.tsx` | Reusable course card component (own folder). |
+| `hooks/useCourses.ts` | Separated course filtering & state logic. |
+| `services/api.ts` | Separated API fetch helper with `expo-secure-store` JWT support. |
 
 ### Admin Portal (`frontend/admin/`)
 - `src/app/` — Next.js App Router pages (Login, Dashboard, Courses, Lessons, Users).

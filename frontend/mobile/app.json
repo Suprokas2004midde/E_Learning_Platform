@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "E-Learning Platform",
+    "slug": "e-learning-platform",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "elearning",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "android": {
+      "package": "com.elearning.platform",
+      "adaptiveIcon": {
+        "backgroundColor": "#4F46E5"
+      }
+    },
+    "plugins": ["expo-router"]
+  }
+}
+
