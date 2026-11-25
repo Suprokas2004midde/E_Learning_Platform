@@ -26,3 +26,4 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 
 ## Setup (coming soon)
 > Admin portal scaffold is in progress. Run `npm run dev` from this folder once set up.
+
