@@ -8,7 +8,8 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 
 - [x] **Step 1**: Root monorepo setup (`.gitignore`, `.npmrc`, `pnpm-workspace.yaml`, `package.json`, `turbo.json`, `AGENTS.md`, `README.md`)
 - [x] **Step 2**: Shared types & Zod schemas (`packages/shared`)
-- [x] **Step 3**: Public Mobile App layout & modular components (`frontend/mobile` — Expo + Expo Router + NativeWind)
+- [x] **Step 3**: Public Mobile App layout & modular components (`frontend/mobile` — Expo SDK 58 + Expo Router + NativeWind)
+- [x] **Step 3.5**: Placeholder scaffolds for `backend/` and `frontend/admin/` with `.env` templates and READMEs
 - [ ] **Step 4**: Single Backend (`backend/` — Hono + MongoDB + Cloudinary + JWT)
 - [ ] **Step 5**: Admin Portal (`frontend/admin` — Next.js + Tailwind + Vercel)
 
@@ -18,13 +19,15 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 
 1. **Install dependencies** (from the root `E_Learning_Platform/`):
    ```bash
-   npx pnpm install
+   npm install
    ```
 2. **Start the Mobile App** (from `frontend/mobile/`):
    ```bash
    npx expo start -c
    ```
    Scan the QR code with **Expo Go** on Android (or press `a` for Android emulator / `w` for web).
+
+> **Note**: `.npmrc` sets `legacy-peer-deps=true` globally so all installs resolve cleanly across the monorepo.
 
 ---
 
@@ -64,14 +67,26 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 | `hooks/useCourses.ts` | Separated course filtering & state logic. |
 | `services/api.ts` | Separated API fetch helper with `expo-secure-store` JWT support. |
 
-### Admin Portal (`frontend/admin/`)
-- `src/app/` — Next.js App Router pages (Login, Dashboard, Courses, Lessons, Users).
-- `src/components/` — Reusable UI components.
-- `src/lib/` — API client and auth helpers.
-
 ### Backend (`backend/`)
-- `src/routes/` — Hono route handlers (`auth`, `courses`, `lessons`, `enrollments`, `admin`).
-- `src/models/` — Mongoose schemas (`User`, `Course`, `Lesson`, `Enrollment`).
-- `src/middleware/` — JWT verification and role-based access (`STUDENT` vs `ADMIN`).
-- `src/lib/` — MongoDB connection and Cloudinary upload helpers.
+| File / Folder | Purpose |
+| :--- | :--- |
+| `README.md` | Stack overview, folder structure, and `.env` variable reference. |
+| `.env` | Environment variable template (`PORT`, `MONGODB_URI`, `JWT_SECRET`, `CLOUDINARY_*`). Tracked for team collaboration. |
+| `package.json` | Placeholder package — full scaffold coming in Step 4. |
+| `src/index.ts` | Entry point placeholder. |
+| `src/routes/` | Will contain Hono route handlers (`auth`, `courses`, `lessons`, `enrollments`, `admin`). |
+| `src/models/` | Will contain Mongoose schemas (`User`, `Course`, `Lesson`, `Enrollment`). |
+| `src/middleware/` | Will contain JWT verification and role-based access (`STUDENT` vs `ADMIN`). |
+| `src/lib/` | Will contain MongoDB connection and Cloudinary upload helpers. |
+
+### Admin Portal (`frontend/admin/`)
+| File / Folder | Purpose |
+| :--- | :--- |
+| `README.md` | Stack overview, folder structure, and `.env` variable reference. |
+| `.env` | Environment variable template (`NEXT_PUBLIC_API_URL`). Tracked for team collaboration. |
+| `package.json` | Placeholder package — full scaffold coming in Step 5. |
+| `src/app/page.tsx` | Entry point placeholder. |
+| `src/app/` | Will contain Next.js App Router pages (Login, Dashboard, Courses, Lessons, Users). |
+| `src/components/` | Will contain reusable UI components (each in own folder). |
+| `src/lib/` | Will contain API client and auth helpers. |
 

@@ -1,0 +1,10 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo Backend not set up yet",
+    "build": "echo Backend not set up yet"
+  }
+}
+
