@@ -8,7 +8,7 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 
 - [x] **Step 1**: Root monorepo setup with npm workspaces (`.gitignore`, `.npmrc`, `package.json`, `AGENTS.md`, `README.md`)
 - [x] **Step 2**: Shared types & Zod schemas (`packages/shared` — User, Course, Lesson, Enrollment)
-- [x] **Step 3**: Student Mobile App (`frontend/mobile` — Expo SDK 58 + Expo Router + NativeWind + Reanimated 4)
+- [x] **Step 3**: Student Mobile App (`frontend/mobile` — Expo SDK 58 + Expo Router + NativeWind + Vodafone-inspired Design System)
 - [x] **Step 4**: Single Backend (`backend/` — Node.js + Express + MongoDB Mongoose + 3-Tier Layered MVC)
 - [x] **Step 5**: Admin & Seller Portal (`frontend/admin` — React + Vite + Tailwind CSS + Video Uploader)
 
@@ -38,9 +38,10 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 4. **Start the Student Mobile App** (from `frontend/mobile/`):
    ```bash
    cd frontend/mobile
-   npx expo start -c
+   npm run dev
    ```
-   Scan the terminal QR code with **Expo Go** on Android (or press `a` for Android emulator / `w` for web).
+   - **On Phone**: Scan the QR code with **Expo Go**.
+   - **In Browser (Web)**: Press `w` in the terminal (or run `npm run web`), and it opens automatically at `http://localhost:8081`!
 
 > **Note**: `.npmrc` sets `legacy-peer-deps=true` globally so all installs resolve cleanly across the monorepo.
 
@@ -57,6 +58,7 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 | `AGENTS.md` | Rules for AI assistants (no auto-commit/push, branch discipline, keep `.env` tracked). |
 | `README.md` | Project overview, tech stack, and setup instructions. |
 | `PROJECT_TRACKING.md` | This file — collaborator reference for every file and feature. |
+| `DESIGN_SYSTEM_VODAFONE.md` | Vodafone-inspired design system specification reference (typography, color palettes, spacing, UI component guidelines). |
 
 ### Shared Package (`packages/shared/`)
 | File | Purpose |
@@ -70,14 +72,17 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 | :--- | :--- |
 | `package.json`, `tsconfig.json`, `app.json` | Expo SDK 58, Expo Router, NativeWind, react-native-reanimated (4.8.0), react-native-worklets, TanStack Query, and Android package config. |
 | `.env` | Environment variable template (`EXPO_PUBLIC_API_URL=http://localhost:3001`). Tracked for team collaboration. |
-| `tailwind.config.js`, `global.css`, `babel.config.js`, `metro.config.js` | NativeWind (Tailwind CSS for React Native) setup with Reanimated Babel plugin. |
+| `tailwind.config.js`, `global.css`, `babel.config.js`, `metro.config.js` | NativeWind (Tailwind CSS for React Native) setup with `darkMode: "class"` for Web compatibility and Reanimated Babel plugin. |
 | `app/_layout.tsx` | Root layout with `SafeAreaProvider`, `QueryClientProvider`, and `Stack`. |
-| `app/(tabs)/_layout.tsx` | Bottom tab navigator (`Home`, `Courses`, `My Learning`, `Profile`). |
-| `app/(tabs)/index.tsx` | Home/Discover screen with category filter pills and featured courses. |
-| `app/(tabs)/courses.tsx`, `learning.tsx`, `profile.tsx` | Placeholder screens for Courses, My Learning, and Profile tabs. |
-| `components/Header/Header.tsx` | Reusable top header component (own folder). |
-| `components/CategoryPill/CategoryPill.tsx` | Reusable category filter pill component (own folder). |
-| `components/CourseCard/CourseCard.tsx` | Reusable course card component (own folder). |
+| `app/(tabs)/_layout.tsx` | Bottom tab navigator with refined height, item alignment, and label padding to prevent text truncation across devices. |
+| `app/(tabs)/index.tsx` | Home screen featuring a Vodafone editorial dark hero banner, pill categories, and course feed. |
+| `app/(tabs)/courses.tsx` | Explore/search courses screen with Vodafone pill search bar and curriculum inventory. |
+| `app/(tabs)/learning.tsx` | "My Learning" dashboard with live progress meters, resume training cards, and active module badges. |
+| `app/(tabs)/profile.tsx` | Student profile dashboard with status chips, certificate tracking, and account management list. |
+| `components/ResponsiveContainer/ResponsiveContainer.tsx` | Responsive shell enforcing mobile viewports (`max-w-[480px]`), centering on tablets/web, and managing safe areas. |
+| `components/Header/Header.tsx` | Reusable top header with Vodafone typography, uppercase red eyebrows, and notification action. |
+| `components/CategoryPill/CategoryPill.tsx` | Reusable filter pill with Vodafone active scarlet red background and crisp borders. |
+| `components/CourseCard/CourseCard.tsx` | Clean Vodafone-styled course card with pricing, duration, ratings, and arrow action icon. |
 | `hooks/useCourses.ts` | Course fetching (React Query) & category filtering state logic with offline fallback. |
 | `services/api.ts` | API fetch helper with `expo-secure-store` JWT support pointing to `EXPO_PUBLIC_API_URL`. |
 

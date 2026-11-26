@@ -10,13 +10,15 @@ export function CategoryPill({ label, isActive, onPress }: CategoryPillProps) {
   return (
     <Pressable
       onPress={onPress}
-      className={`px-4 py-2 rounded-full mr-2 ${
-        isActive ? "bg-indigo-600" : "bg-slate-100"
+      className={`px-5 py-2.5 rounded-full mr-2.5 border active:opacity-90 ${
+        isActive
+          ? "bg-primary border-primary"
+          : "bg-white border-mute/50"
       }`}
     >
       <Text
-        className={`text-sm font-medium ${
-          isActive ? "text-white" : "text-slate-700"
+        className={`text-xs font-bold uppercase tracking-wider ${
+          isActive ? "text-white" : "text-ink"
         }`}
       >
         {label}
