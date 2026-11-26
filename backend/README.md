@@ -1,36 +1,54 @@
-# Backend — E-Learning Platform API
+# Backend — E-Learning Platform API (MVC Architecture)
 
-This is the single **Node.js + Hono** backend that serves both the mobile app and admin portal.
+A modular **Node.js + Express + MongoDB** backend structured using an enterprise 3-tier MVC pattern.
 
-## Stack
-- **Framework**: Hono (TypeScript)
-- **Database**: MongoDB + Mongoose
-- **Media**: Cloudinary
-- **Auth**: JWT + bcryptjs
-- **Roles**: `STUDENT` (mobile app) | `ADMIN` (admin portal)
+## Architecture & Layers
 
-## Folder Structure
 ```
 backend/
-├── src/
-│   ├── routes/       # Auth, Courses, Lessons, Enrollments, Admin routes
-│   ├── models/       # Mongoose schemas (User, Course, Lesson, Enrollment)
-│   ├── middleware/   # JWT auth & role-based access control
-│   └── lib/          # MongoDB connection & Cloudinary helpers
-├── .env              # Environment variables (tracked for team collaboration)
-└── package.json
+├── config/             # Configuration files (Database, Cloudinary, etc.)
+│   └── db.js           # Mongoose MongoDB connection
+├── controllers/        # Request handling & HTTP responses
+│   └── courseController.js
+├── middleware/         # Custom middlewares (Authentication, roles, errors)
+│   └── authMiddleware.js
+├── repository/         # Data Access Layer (Direct DB interactions via Mongoose models)
+│   └── courseRepository.js
+├── routes/             # API Route declarations
+│   └── courseRoute.js  # /api/course endpoints
+├── schema/             # Mongoose Schemas & Models
+│   └── courseModel.js
+├── services/           # Business Logic Layer (Processes data & calls repositories)
+│   └── courseService.js
+├── util/               # Shared utilities & response helpers
+│   └── responseHandler.js
+├── validators/         # Request body validation middlewares
+│   └── courseValidator.js
+├── .env                # Environment variables (tracked for team collaboration)
+├── package.json
+└── server.js           # Application entry point
 ```
 
-## Environment Variables (`.env`)
-```env
-PORT=3001
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+## Layered Flow Overview
+
+```
+Request ──► Route ──► Middleware/Validator ──► Controller ──► Service ──► Repository ──► Schema (DB)
+                                                  │             │             │
+Response ◄────────────────────────────────────────┴─────────────┴─────────────┘
 ```
 
-## Setup (coming soon)
-> Backend scaffold is in progress. Run `npm run dev` from this folder once set up.
+1. **`routes/`**: Receives incoming requests and applies middleware/validators.
+2. **`controllers/`**: Extracts parameters/body from `req`, delegates business logic to `services/`, and formats the HTTP response (`res.status(...).json(...)`).
+3. **`services/`**: Houses all business calculations, validation, and multi-step logic, delegating queries to `repository/`.
+4. **`repository/`**: Directly queries the Mongoose models defined in `schema/`.
+5. **`schema/`**: Defines MongoDB collections and data structure using Mongoose.
 
+## Running the Backend
+
+```bash
+cd backend
+npm run dev
+```
+
+The server starts at `http://localhost:3001`.
+Health check available at `http://localhost:3001/api/health`.

@@ -7,15 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "lint": "turbo lint",
-    "typecheck": "turbo typecheck"
-  },
-  "devDependencies": {
-    "turbo": "^2.3.0",
-    "typescript": "^5.7.2"
+    "dev:mobile": "npm run dev --workspace=mobile",
+    "dev:admin": "npm run dev --workspace=admin",
+    "dev:backend": "npm run dev --workspace=backend"
   }
 }
-
-

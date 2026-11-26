@@ -6,12 +6,11 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 
 ## Progress Checklist
 
-- [x] **Step 1**: Root monorepo setup (`.gitignore`, `.npmrc`, `pnpm-workspace.yaml`, `package.json`, `turbo.json`, `AGENTS.md`, `README.md`)
-- [x] **Step 2**: Shared types & Zod schemas (`packages/shared`)
-- [x] **Step 3**: Public Mobile App layout & modular components (`frontend/mobile` — Expo SDK 58 + Expo Router + NativeWind)
-- [x] **Step 3.5**: Placeholder scaffolds for `backend/` and `frontend/admin/` with `.env` templates and READMEs
-- [ ] **Step 4**: Single Backend (`backend/` — Hono + MongoDB + Cloudinary + JWT)
-- [ ] **Step 5**: Admin Portal (`frontend/admin` — Next.js + Tailwind + Vercel)
+- [x] **Step 1**: Root monorepo setup with npm workspaces (`.gitignore`, `.npmrc`, `package.json`, `AGENTS.md`, `README.md`)
+- [x] **Step 2**: Shared types & Zod schemas (`packages/shared` — User, Course, Lesson, Enrollment)
+- [x] **Step 3**: Student Mobile App (`frontend/mobile` — Expo SDK 58 + Expo Router + NativeWind + Reanimated 4)
+- [x] **Step 4**: Single Backend (`backend/` — Node.js + Express + MongoDB Mongoose + 3-Tier Layered MVC)
+- [x] **Step 5**: Admin & Seller Portal (`frontend/admin` — React + Vite + Tailwind CSS + Video Uploader)
 
 ---
 
@@ -21,11 +20,27 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
    ```bash
    npm install
    ```
-2. **Start the Mobile App** (from `frontend/mobile/`):
+
+2. **Start the Backend** (from `backend/`):
    ```bash
+   cd backend
+   npm run dev
+   ```
+   Server runs at `http://localhost:3001`. Health check: `http://localhost:3001/api/health`.
+
+3. **Start the Admin & Instructor Web Portal** (from `frontend/admin/`):
+   ```bash
+   cd frontend/admin
+   npm run dev
+   ```
+   Portal runs at `http://localhost:3000`.
+
+4. **Start the Student Mobile App** (from `frontend/mobile/`):
+   ```bash
+   cd frontend/mobile
    npx expo start -c
    ```
-   Scan the QR code with **Expo Go** on Android (or press `a` for Android emulator / `w` for web).
+   Scan the terminal QR code with **Expo Go** on Android (or press `a` for Android emulator / `w` for web).
 
 > **Note**: `.npmrc` sets `legacy-peer-deps=true` globally so all installs resolve cleanly across the monorepo.
 
@@ -36,12 +51,10 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 ### Root (`/`)
 | File | Purpose |
 | :--- | :--- |
-| `.gitignore` | Ignores `node_modules/`, build outputs (`.next/`, `.expo/`, `dist/`), and logs. **Intentionally keeps `.env` tracked** for team collaboration. |
-| `.npmrc` | Configures `node-linker=hoisted` so Expo Metro and NativeWind resolve all `pnpm` dependencies cleanly. |
-| `pnpm-workspace.yaml` | Defines the monorepo workspaces: `frontend/*`, `backend`, and `packages/*`. |
-| `package.json` | Root workspace scripts (`dev`, `build`, `lint`, `typecheck`) powered by Turborepo. |
-| `turbo.json` | Configures Turborepo task caching and execution order. |
-| `AGENTS.md` | Rules for AI assistants (no auto-commit/push, stay on `main`, keep `.env` tracked). |
+| `.gitignore` | Ignores `node_modules/`, build outputs, and logs. **Intentionally keeps `.env` tracked** for team collaboration. |
+| `.npmrc` | Configures `legacy-peer-deps=true` for clean peer resolution across dependencies. |
+| `package.json` | Root configuration defining npm workspaces (`frontend/*`, `backend`, `packages/*`) and convenience dev scripts. |
+| `AGENTS.md` | Rules for AI assistants (no auto-commit/push, branch discipline, keep `.env` tracked). |
 | `README.md` | Project overview, tech stack, and setup instructions. |
 | `PROJECT_TRACKING.md` | This file — collaborator reference for every file and feature. |
 
@@ -50,13 +63,14 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 | :--- | :--- |
 | `package.json` | Defines `@repo/shared` workspace package with `zod`. |
 | `tsconfig.json` | TypeScript configuration for strict type-checking. |
-| `src/index.ts` | Exports shared Zod schemas & inferred TS types (`UserRole`, `RegisterInput`, `LoginInput`, `CourseInput`, `LessonInput`). |
+| `src/index.ts` | Exports shared Zod schemas & inferred TS types (`UserRole`: `STUDENT` \| `INSTRUCTOR` \| `ADMIN`, `RegisterInput`, `LoginInput`, `CourseInput`, `LessonInput`, `EnrollmentInput`). |
 
 ### Public Mobile App (`frontend/mobile/`)
 | File / Folder | Purpose |
 | :--- | :--- |
-| `package.json`, `tsconfig.json`, `app.json` | Expo SDK 52+, Expo Router, NativeWind, TanStack Query, and Android package config. |
-| `tailwind.config.js`, `global.css`, `babel.config.js`, `metro.config.js` | NativeWind (Tailwind CSS for React Native) setup. |
+| `package.json`, `tsconfig.json`, `app.json` | Expo SDK 58, Expo Router, NativeWind, react-native-reanimated (4.8.0), react-native-worklets, TanStack Query, and Android package config. |
+| `.env` | Environment variable template (`EXPO_PUBLIC_API_URL=http://localhost:3001`). Tracked for team collaboration. |
+| `tailwind.config.js`, `global.css`, `babel.config.js`, `metro.config.js` | NativeWind (Tailwind CSS for React Native) setup with Reanimated Babel plugin. |
 | `app/_layout.tsx` | Root layout with `SafeAreaProvider`, `QueryClientProvider`, and `Stack`. |
 | `app/(tabs)/_layout.tsx` | Bottom tab navigator (`Home`, `Courses`, `My Learning`, `Profile`). |
 | `app/(tabs)/index.tsx` | Home/Discover screen with category filter pills and featured courses. |
@@ -64,29 +78,49 @@ This document tracks every folder, file, and feature in the **E-Learning Platfor
 | `components/Header/Header.tsx` | Reusable top header component (own folder). |
 | `components/CategoryPill/CategoryPill.tsx` | Reusable category filter pill component (own folder). |
 | `components/CourseCard/CourseCard.tsx` | Reusable course card component (own folder). |
-| `hooks/useCourses.ts` | Separated course filtering & state logic. |
-| `services/api.ts` | Separated API fetch helper with `expo-secure-store` JWT support. |
+| `hooks/useCourses.ts` | Course fetching (React Query) & category filtering state logic with offline fallback. |
+| `services/api.ts` | API fetch helper with `expo-secure-store` JWT support pointing to `EXPO_PUBLIC_API_URL`. |
 
 ### Backend (`backend/`)
 | File / Folder | Purpose |
 | :--- | :--- |
-| `README.md` | Stack overview, folder structure, and `.env` variable reference. |
+| `server.js` | Express application entry point with CORS, JSON body parser, and route mounting. |
+| `config/db.js` | Database connection handler with Mongoose. |
+| `schema/courseModel.js` | Mongoose schema and model definition (Data Structure layer). |
+| `repository/courseRepository.js` | Data Access layer (Direct Mongoose queries: find, create, update). |
+| `services/courseService.js` | Business Logic layer (Handles course validation & data operations). |
+| `controllers/courseController.js` | Controller layer (Extracts request params/body, calls services, formats HTTP response). |
+| `routes/courseRoute.js` | API route definitions (`/api/course`) linking middleware, validators, and controllers. |
+| `middleware/authMiddleware.js` | JWT verification and user extraction middleware. |
+| `validators/courseValidator.js` | Request body validation middleware. |
+| `util/responseHandler.js` | Standardized response helper utility. |
+| `README.md` | MVC architecture breakdown, folder structure, and dev instructions. |
 | `.env` | Environment variable template (`PORT`, `MONGODB_URI`, `JWT_SECRET`, `CLOUDINARY_*`). Tracked for team collaboration. |
-| `package.json` | Placeholder package — full scaffold coming in Step 4. |
-| `src/index.ts` | Entry point placeholder. |
-| `src/routes/` | Will contain Hono route handlers (`auth`, `courses`, `lessons`, `enrollments`, `admin`). |
-| `src/models/` | Will contain Mongoose schemas (`User`, `Course`, `Lesson`, `Enrollment`). |
-| `src/middleware/` | Will contain JWT verification and role-based access (`STUDENT` vs `ADMIN`). |
-| `src/lib/` | Will contain MongoDB connection and Cloudinary upload helpers. |
+| `package.json` | Configured with ES Modules (`"type": "module"`), Express, Mongoose, and dev scripts. |
 
 ### Admin Portal (`frontend/admin/`)
 | File / Folder | Purpose |
 | :--- | :--- |
-| `README.md` | Stack overview, folder structure, and `.env` variable reference. |
-| `.env` | Environment variable template (`NEXT_PUBLIC_API_URL`). Tracked for team collaboration. |
-| `package.json` | Placeholder package — full scaffold coming in Step 5. |
-| `src/app/page.tsx` | Entry point placeholder. |
-| `src/app/` | Will contain Next.js App Router pages (Login, Dashboard, Courses, Lessons, Users). |
-| `src/components/` | Will contain reusable UI components (each in own folder). |
-| `src/lib/` | Will contain API client and auth helpers. |
-
+| `index.html` | HTML5 entry point for the React SPA. |
+| `vite.config.ts` | Vite configuration configured for port 3000 and `@/` path alias. |
+| `tailwind.config.js` | Tailwind CSS configuration with custom brand palette. |
+| `src/main.tsx` | React DOM mount entry point. |
+| `src/App.tsx` | Main web layout and routing shell with React Router DOM. |
+| `src/index.css` | Global styles & Tailwind base directives. |
+| `src/components/Sidebar/Sidebar.tsx` | Left navigation sidebar with active route highlighting. |
+| `src/components/Navbar/Navbar.tsx` | Top search bar, notifications, and instructor profile chip. |
+| `src/components/VideoUploader/VideoUploader.tsx` | Drag-and-drop video upload zone with live Axios upload percentage progress and local preview. |
+| `src/components/VideoPreview/VideoPreview.tsx` | In-browser HTML5 video player component. |
+| `src/components/CourseForm/CourseForm.tsx` | React Hook Form with Zod schema validation for course metadata. |
+| `src/pages/Dashboard.tsx` | Seller analytics overview (revenue, enrolled students, active courses). |
+| `src/pages/Courses.tsx` | Course inventory table with status tags and management actions. |
+| `src/pages/CreateCourse.tsx` | Two-step wizard for creating courses and uploading lesson videos. |
+| `src/pages/UploadVideoPage.tsx` | Dedicated video upload test page. |
+| `src/pages/Login.tsx` | Instructor / Admin login form. |
+| `src/hooks/useVideoUpload.ts` | Custom hook for tracking video upload percentages and handling errors. |
+| `src/hooks/useAuth.ts` | Authentication state and local storage token management. |
+| `src/services/api.ts` | Axios instance preconfigured with backend URL and Authorization header interceptor. |
+| `src/services/courseService.ts` | API service for fetching courses, creating courses, and getting analytics. |
+| `README.md` | Tech stack, folder structure, and dev instructions. |
+| `.env` | Environment variable template (`VITE_API_URL=http://localhost:3001`). Tracked for team collaboration. |
+| `package.json` | Configured with React, Vite, Tailwind CSS, Lucide icons, React Hook Form, and Axios. |

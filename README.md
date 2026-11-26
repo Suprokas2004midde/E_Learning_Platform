@@ -1,28 +1,42 @@
 # E-Learning Platform (Final Year BTech Project)
 
-A lightweight, scalable, full-stack E-Learning Platform built as a **pnpm + Turborepo** monorepo.
+A lightweight, scalable, full-stack E-Learning Platform built as a unified **npm workspaces** monorepo.
 
 ## Architecture
 
-- **`frontend/mobile`**: Public Android/iOS mobile app built with **Expo (Expo Router) + NativeWind + TypeScript**.
-- **`frontend/admin`**: Admin & Instructor web portal built with **Next.js + Tailwind CSS + shadcn/ui** (hosted on **Vercel**).
-- **`backend/`**: Single **Node.js + Hono** REST API serving both the mobile app and admin portal, using **MongoDB (Mongoose)**, **Cloudinary** (media/videos), and **JWT** auth.
+- **`frontend/mobile`**: Student mobile app built with **Expo (Expo Router) + React Native + NativeWind + TypeScript**.
+- **`frontend/admin`**: Instructor & Admin web portal built with **React + Vite + Tailwind CSS**.
+- **`backend/`**: REST API built with **Node.js + Express + MongoDB (Mongoose)** with 3-tier Layered MVC architecture, **Cloudinary** (video/media), and **JWT** auth.
 - **`packages/shared`**: Shared TypeScript types and **Zod** validation schemas (`@repo/shared`).
 
-## Getting Started
+## Package Manager & Workspaces
+
+This repository uses **npm** (v9/v10+) with native npm workspaces.
 
 1. **Install dependencies** (from the repo root):
    ```bash
-   pnpm install
+   npm install
    ```
 
-2. **Run development servers**:
-   ```bash
-   pnpm dev
-   ```
+2. **Run Services Individually**:
+   - **Backend**:
+     ```bash
+     cd backend
+     npm run dev
+     ```
+   - **Admin Web Dashboard**:
+     ```bash
+     cd frontend/admin
+     npm run dev
+     ```
+   - **Expo Mobile App**:
+     ```bash
+     cd frontend/mobile
+     npx expo start
+     ```
 
 ## Collaboration Notes
 
 - See [`PROJECT_TRACKING.md`](./PROJECT_TRACKING.md) for a detailed file-by-file breakdown and progress log.
 - `.env` files are tracked in git for team collaboration—be careful not to share production secrets publicly.
-
+- All development should occur on feature branches; `main` is merged after review.
